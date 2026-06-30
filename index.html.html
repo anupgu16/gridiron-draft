@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Gridiron Draft — Build Your Legend</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Roboto+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --turf-dark:#0B2B1E;
+    --turf-mid:#123A28;
+    --turf-line:#1F5C3F;
+    --chalk:#F2EFE4;
+    --chalk-dim:#B9C4B7;
+    --gold:#D9A33E;
+	--elite:#b8f2ed
+    --red:#B3401F;
+    --ink:#0A0A08;
+    --tier-h:#5FA876;
+    --tier-a:#D9A33E;
+    --tier-l:#B3401F;
+	--tier-e:#b8f2ed;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(circle at 50% -10%, rgba(217,163,62,0.08), transparent 45%),
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.025) 0px, rgba(255,255,255,0.025) 2px, transparent 2px, transparent 64px),
+      var(--turf-dark);
+    color:var(--chalk);
+    font-family:'Inter',sans-serif;
+    min-height:100vh;
+    padding:28px 16px 60px;
+  }
+  .wrap{max-width:760px;margin:0 auto;}
+
+  .scoreboard{text-align:center;margin-bottom:18px;}
+  .scoreboard h1{
+    font-family:'Anton',sans-serif;
+    font-size:clamp(34px,7vw,56px);
+    letter-spacing:1px;margin:0;color:var(--chalk);
+    text-shadow:0 0 18px rgba(217,163,62,0.25);
+  }
+  .scoreboard h1 span{color:var(--gold);}
+  .scoreboard p{color:var(--chalk-dim);font-size:13px;letter-spacing:2px;text-transform:uppercase;margin:4px 0 0;}
+
+  .drive{display:flex;justify-content:space-between;align-items:center;margin:24px 0 28px;gap:4px;flex-wrap:wrap;}
+  .down-label{font-family:'Roboto Mono',monospace;font-size:9.5px;text-align:center;color:var(--chalk-dim);letter-spacing:0.5px;flex:1;min-width:60px;}
+  .down-label.active{color:var(--gold);font-weight:700;}
+  .down-label.done{color:var(--tier-h);}
+
+  .panel{
+    background:linear-gradient(180deg, var(--turf-mid), var(--turf-dark));
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:6px;padding:28px 24px;
+    box-shadow:0 20px 50px -25px rgba(0,0,0,0.6);
+    animation:rise .4s ease;
+  }
+  @keyframes rise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+  .panel h2{font-family:'Anton',sans-serif;font-size:24px;letter-spacing:0.5px;margin:0 0 4px;color:var(--gold);}
+  .panel .sub{color:var(--chalk-dim);font-size:13px;margin:0 0 20px;line-height:1.5;}
+
+  input[type=text]{
+    width:100%;background:var(--ink);border:1px solid rgba(255,255,255,0.12);
+    color:var(--chalk);font-family:'Inter',sans-serif;font-size:18px;
+    padding:14px 16px;border-radius:4px;outline:none;
+  }
+  input[type=text]:focus{border-color:var(--gold);}
+
+  .btn{
+    font-family:'Anton',sans-serif;letter-spacing:1px;font-size:16px;
+    background:var(--gold);color:var(--ink);border:none;padding:14px 26px;
+    border-radius:4px;cursor:pointer;transition:transform .12s ease, box-shadow .12s ease;
+  }
+  .btn:hover{transform:translateY(-1px);box-shadow:0 8px 20px -8px rgba(217,163,62,0.6);}
+  .btn:active{transform:translateY(0);}
+  .btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;box-shadow:none;}
+  .btn.ghost{background:transparent;color:var(--chalk-dim);border:1px solid rgba(255,255,255,0.18);}
+  .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;}
+
+  .pos-reel{
+    border:2px dashed rgba(217,163,62,0.4);border-radius:6px;padding:30px 20px;
+    text-align:center;margin-bottom:18px;min-height:90px;
+    display:flex;align-items:center;justify-content:center;flex-direction:column;
+  }
+  .pos-reel .big{font-family:'Anton',sans-serif;font-size:34px;color:var(--chalk);}
+  .pos-reel .label{font-size:12px;color:var(--chalk-dim);letter-spacing:2px;text-transform:uppercase;}
+  .pos-reel .sub2{font-size:11px;color:var(--gold);letter-spacing:1px;margin-top:4px;}
+
+  .arch-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px;}
+  @media (max-width:520px){.arch-grid{grid-template-columns:1fr;}}
+  .arch-card{border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.02);border-radius:6px;padding:14px;transition:border-color .15s ease, background .15s ease;}
+  .arch-card.selected{border-color:var(--gold);background:rgba(217,163,62,0.08);}
+  .arch-card .name{font-weight:700;font-size:14px;margin-bottom:4px;}
+  .arch-card .tiers{font-family:'Roboto Mono',monospace;font-size:11px;color:var(--chalk-dim);}
+  .tier-tag{padding:1px 5px;border-radius:3px;margin-right:4px;display:inline-block;margin-top:4px;}
+  .tier-tag.E{background:rgba(95,168,118,0.18);color:var(--tier-e);}
+  .tier-tag.H{background:rgba(95,168,118,0.18);color:var(--tier-h);}
+  .tier-tag.A{background:rgba(217,163,62,0.14);color:var(--tier-a);}
+  .tier-tag.L{background:rgba(179,64,31,0.16);color:var(--tier-l);}
+
+  .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;}
+  @media (max-width:520px){.stat-grid{grid-template-columns:1fr;}}
+  .stat-reel{background:var(--ink);border:1px solid rgba(255,255,255,0.1);border-radius:5px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;}
+  .stat-reel .sname{font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--chalk-dim);}
+  .stat-reel .sval{font-family:'Roboto Mono',monospace;font-weight:700;font-size:20px;min-width:38px;text-align:right;}
+  .bar-track{height:4px;background:rgba(255,255,255,0.08);border-radius:2px;margin-top:6px;overflow:hidden;}
+  .bar-fill{height:100%;background:var(--gold);border-radius:2px;transition:width .15s linear;}
+  .stat-col{flex:1;}
+
+  .trait-card{border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:14px;margin-bottom:8px;background:rgba(255,255,255,0.02);}
+  .trait-card .tname{color:var(--gold);font-weight:700;font-size:14px;}
+  .trait-card .tdesc{color:var(--chalk-dim);font-size:13px;margin-top:2px;}
+  .trait-card .tboost{font-family:'Roboto Mono',monospace;font-size:12px;margin-top:6px;}
+
+  .player-card{
+    background:linear-gradient(160deg,#16432e,#0c2118);border:2px solid var(--gold);
+    border-radius:10px;padding:24px;position:relative;overflow:hidden;
+  }
+  .player-card::before{content:"";position:absolute;top:-40%;left:-10%;width:140%;height:180%;background:radial-gradient(circle, rgba(217,163,62,0.10), transparent 60%);}
+  .pc-top{display:flex;justify-content:space-between;align-items:flex-start;position:relative;z-index:1;}
+  .pc-name{font-family:'Anton',sans-serif;font-size:30px;color:var(--chalk);line-height:1;}
+  .pc-pos{font-family:'Roboto Mono',monospace;color:var(--gold);font-size:13px;letter-spacing:2px;margin-top:4px;}
+  .pc-ovr{font-family:'Anton',sans-serif;font-size:38px;color:var(--gold);border:2px solid var(--gold);border-radius:8px;padding:4px 14px;line-height:1;}
+  .pc-ovr .lbl{display:block;font-family:'Inter',sans-serif;font-size:9px;color:var(--chalk-dim);letter-spacing:1px;text-align:center;}
+  .pc-arch{margin-top:10px;font-size:13px;color:var(--chalk-dim);position:relative;z-index:1;}
+  .pc-traits{margin-top:6px;font-size:13px;color:var(--gold);position:relative;z-index:1;}
+  .pc-stats{margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;position:relative;z-index:1;}
+  .pc-stat-row{display:flex;justify-content:space-between;font-size:12px;border-bottom:1px solid rgba(255,255,255,0.07);padding-bottom:3px;}
+  .pc-stat-row b{font-family:'Roboto Mono',monospace;}
+
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-top:10px;}
+  th,td{padding:6px 8px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.07);}
+  th{color:var(--gold);font-size:11px;letter-spacing:1px;text-transform:uppercase;}
+  tr.you{background:rgba(217,163,62,0.08);}
+  .tag-win{color:var(--tier-h);font-weight:700;}
+  .tag-loss{color:var(--tier-l);font-weight:700;}
+  .scroll-table{max-height:340px;overflow-y:auto;border:1px solid rgba(255,255,255,0.08);border-radius:6px;}
+  .section-title{font-family:'Anton',sans-serif;color:var(--gold);font-size:18px;margin:26px 0 8px;}
+  .award{display:inline-block;background:rgba(217,163,62,0.12);border:1px solid var(--gold);color:var(--gold);font-size:12px;padding:4px 10px;border-radius:14px;margin:3px 4px 0 0;}
+  .placeholder-note{font-size:11px;color:var(--chalk-dim);border-left:2px solid var(--red);padding:6px 10px;margin-top:14px;background:rgba(179,64,31,0.08);border-radius:0 4px 4px 0;}
+  .conf-pill{font-family:'Roboto Mono',monospace;font-size:10px;letter-spacing:1px;padding:2px 8px;border-radius:10px;border:1px solid var(--gold);color:var(--gold);display:inline-block;}
+  .grade-row{display:flex;gap:18px;justify-content:center;margin-top:8px;}
+  .grade-row div{text-align:center;}
+  .grade-row .gv{font-family:'Anton',sans-serif;font-size:22px;}
+  .grade-row .gl{font-size:10px;color:var(--chalk-dim);letter-spacing:1px;text-transform:uppercase;}
+  .hidden{display:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="scoreboard">
+    <h1>GRIDIRON <span>DRAFT</span></h1>
+    <p>Build a player · spin your stats · play the 16-game season</p>
+  </div>
+  <div class="drive" id="driveBar"></div>
+  <div class="panel" id="panel"></div>
+</div>
+
+<script>
+/* =========================================================
+   DATA — replace/extend POSITIONS, ARCHETYPES, TRAITS later
+   ========================================================= */
+
+const STAT_LABELS = {
+  STR:"Strength", AGI:"Agility", INT:"Intelligence", TKL:"Tackling",
+  SPD:"Speed", HND:"Hands", BLK:"Blocking", END:"Endurance",
+  CMP:"Competitiveness", KPW:"Kick Power", KAC:"Kick Accuracy",
+  ARM:"Arm Strength", ACC:"Arm Accuracy"
+};
+
+const TIERS = { E: [88,99], H:[76,87], A:[55,75], L:[5,54] };
+
+const POSITIONS = {
+  QB: { label:"Quarterback", stats:["STR","AGI","INT","SPD","END","CMP","ARM","ACC"],
+    archetypes: {
+      "Gunslinger":     { STR:"A", AGI:"A", INT:"H", SPD:"A", ARM:"E", ACC:"A", END:"A", CMP:"A" },
+      "Pocket Passer":  { STR:"A", AGI:"A", INT:"H", SPD:"A", ARM:"A", ACC:"E", END:"A", CMP:"A" },
+      "Field General":  { STR:"A", AGI:"A", INT:"E", SPD:"A", ARM:"H", ACC:"H", END:"A", CMP:"A"},
+      "Scrambler":      { STR:"A", AGI:"A", INT:"H", SPD:"E", ARM:"A", ACC:"A", END:"A", CMP:"A" },
+      "Mobile":         { STR:"H", AGI:"A", INT:"H", SPD:"H", ARM:"A", ACC:"A", END:"A", CMP:"A" },
+    }},
+  RB: { label:"Running Back", stats:["STR","AGI","INT","SPD","HND","BLK","END","CMP"],
+    archetypes: {
+      "Power Back":      { STR:"H", AGI:"H", INT:"A", SPD:"H", HND:"A", BLK:"A", END:"H", CMP:"A" },
+      "Speed Back":      { STR:"A", AGI:"H", INT:"A", SPD:"E", HND:"A", BLK:"L", END:"A", CMP:"A" },
+      "Receiving Back":  { STR:"A", AGI:"H", INT:"A", SPD:"H", HND:"H", BLK:"A", END:"A", CMP:"A" },
+      "Fullback":        { STR:"H", AGI:"A", INT:"A", SPD:"A", HND:"A", BLK:"E", END:"A", CMP:"A" },
+    }},
+  WR: { label:"Wide Receiver", stats:["STR","AGI","INT","SPD","HND","BLK","END","CMP"],
+    archetypes: {
+      "Speed Receiver":      { STR:"A", AGI:"H", INT:"A", SPD:"E", HND:"H", BLK:"L", END:"A", CMP:"A" },
+      "Slot Receiver":       { STR:"A", AGI:"H", INT:"A", SPD:"H", HND:"H", BLK:"A", END:"H", CMP:"A" },
+      "Possession Receiver": { STR:"H", AGI:"A", INT:"H", SPD:"A", HND:"E", BLK:"L", END:"A", CMP:"A" },
+    }},
+};
+const OFFENSIVE_POS = ["QB","RB","WR"];
+
+// PLACEHOLDER traits — swap in your real trait list whenever you're ready.
+const TRAITS = [
+  { name:"Iron Man",     	 desc:"I want all the minutes",          		stat:"END", boost:8 },
+	  { name:"True Competitor",  desc:"Not here by accident",        	    stat:"CMP", boost:8 },
+  { name:"Sim League Vet",   desc:"Back in my day...",    			 		stat:"INT", boost:8 },
+  { name:"Glue Hands", 	 	 desc:"Give me the ball!",               		stat:"HND", boost:8 },
+  { name:"Athlete",       	 desc:"Everyone's Favorite",       		 		stat:"SPD", boost:8 },
+  { name:"Team Player",  	 desc:"Play me at FB, I don't care.",    		stat:"BLK", boost:8 },
+  { name:"DND",     	 	 desc:"With the last overall pick...", 	 		stat:"INT", boost:-6 },
+  { name:"Gym Rat",      	 desc:"Speed? Just hit him.",       			stat:"STR", boost:8 },
+  { name:"Server-Hopper", 	 desc:"Electric but unpredictable.",     		stat:"AGI", boost:8 },
+  { name:"Mr. Reliable",     desc:"Waters the tree and says Good Morning",	stat:"TKL", boost:8 },
+  { name:"IA",     			 desc:"If you're reading this, please contact your GMs",	stat:"SPD", boost:-6 },
+];
+
+// Real league. Two 7-team conferences, 14 teams total, letter-graded offense/defense.
+const LEAGUE = {
+  ASFC: [
+    { name:"Honolulu Hahalua",        off:"B",  def:"B+"  },
+    { name:"Orange County Otters",    off:"B",  def:"B"  },
+    { name:"Arizona Outlaws",         off:"B+", def:"B-" },
+    { name:"New York Silverbacks",    off:"B+",  def:"C+" },
+    { name:"New Orleans Second Line", off:"B-", def:"B-" },
+    { name:"Austin Copperheads",      off:"B",  def:"C+" },
+    { name:"San Jose Sabercats",      off:"D",  def:"D" },
+  ],
+  NSFC: [
+    { name:"Baltimore Hawks",         off:"B+", def:"B+" },
+    { name:"Black Forest Brood",      off:"C+", def:"A-"  },
+    { name:"Colorado Yeti",           off:"B", def:"B-" },
+    { name:"Sarasota Sailfish",       off:"B",  def:"B"  },
+    { name:"Osaka Kaiju",             off:"A-", def:"C" },
+    { name:"Yellowknife Wraiths",     off:"B-", def:"C+" },
+    { name:"Cape Town Crash",         off:"D-", def:"F"  },
+  ]
+};
+const GRADE_VAL = {
+  "A+":97,"A":94,"A-":91,"B+":88,"B":85,"B-":82,"C+":78,"C":75,"C-":72,
+  "D+":68,"D":65,"D-":62,"F":55
+};
+function flattenLeague(){
+  const list = [];
+  Object.keys(LEAGUE).forEach(conf=>{
+    LEAGUE[conf].forEach(t=> list.push({ ...t, conf, offVal:GRADE_VAL[t.off], defVal:GRADE_VAL[t.def] }));
+  });
+  return list;
+}
+
+/* =========================================================
+   STATE
+   ========================================================= */
+const state = {
+  step: 0, name: "", position: null, archetype: null,
+  stats: {}, traits: [], team: null, season: null,
+};
+function resetState(){
+  Object.assign(state, { step:0, name:"", position:null, archetype:null, stats:{}, traits:[], team:null, season:null });
+}
+
+/* =========================================================
+   HELPERS
+   ========================================================= */
+const rand = (lo,hi) => Math.floor(Math.random()*(hi-lo+1))+lo;
+const pick = arr => arr[Math.floor(Math.random()*arr.length)];
+const clamp = (v,lo,hi) => Math.max(lo, Math.min(hi, v));
+function shuffle(arr){ const a=[...arr]; for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function rollStatValue(tier){ const [lo,hi] = TIERS[tier] || TIERS.A; return rand(lo,hi); }
+function tierFor(archDef, statCode){ return (archDef && archDef[statCode]) ? archDef[statCode] : "A"; }
+function ordinal(n){ const s=["th","st","nd","rd"], v=n%100; return s[(v-20)%10] || s[v] || s[0]; }
+
+/* =========================================================
+   RENDER: drive bar
+   ========================================================= */
+function renderDrive(){
+  const bar = document.getElementById("driveBar");
+  const labels = ["1ST & NAME","2ND & POSITION","3RD & ARCHETYPE","4TH & STATS","GOAL LINE: TRAITS","THE CARD","DRAFT DAY","KICKOFF"];
+  bar.innerHTML = labels.map((l,i)=>{
+    const cls = i < state.step ? "done" : (i===state.step ? "active":"");
+    return `<div class="down-label ${cls}">${l}</div>`;
+  }).join("");
+}
+function goto(step){ state.step = step; renderDrive(); RENDERERS[step](); }
+
+/* =========================================================
+   STEP 0 — NAME
+   ========================================================= */
+function renderName(){
+  document.getElementById("panel").innerHTML = `
+    <h2>Name Your Player</h2>
+    <p class="sub">Every legend starts with a name on the back of the jersey.</p>
+    <input type="text" id="nameInput" placeholder="e.g. Marcus Tilden" maxlength="28" value="${state.name||""}">
+    <div class="row"><button class="btn" id="nameNext">Lock It In →</button></div>
+  `;
+  const input = document.getElementById("nameInput");
+  input.focus();
+  const tryNext = () => {
+    const v = input.value.trim();
+    if(!v) { input.style.borderColor = "var(--red)"; return; }
+    state.name = v;
+    goto(1);
+  };
+  document.getElementById("nameNext").onclick = tryNext;
+  input.addEventListener("keydown", e => { if(e.key==="Enter") tryNext(); });
+}
+
+/* =========================================================
+   STEP 1 — POSITION SPIN
+   ========================================================= */
+function renderPosition(){
+  document.getElementById("panel").innerHTML = `
+    <h2>Spin For Position</h2>
+    <p class="sub">The wheel decides where ${state.name} lines up.</p>
+    <div class="pos-reel" id="posReel">
+      <div class="big" id="posBig">—</div>
+      <div class="label" id="posLabel">tap spin</div>
+    </div>
+    <div class="row">
+      <button class="btn" id="spinPos">🏈 Spin</button>
+      <button class="btn ghost hidden" id="posNext">Continue →</button>
+    </div>
+  `;
+  document.getElementById("spinPos").onclick = () => {
+    const codes = Object.keys(POSITIONS);
+    let ticks = 0, maxTicks = 22, delay = 50;
+    const big = document.getElementById("posBig");
+    const lbl = document.getElementById("posLabel");
+    document.getElementById("spinPos").disabled = true;
+    function tick(){
+      const c = pick(codes);
+      big.textContent = c;
+      lbl.textContent = POSITIONS[c].label;
+      ticks++;
+      if(ticks < maxTicks){ delay *= 1.08; setTimeout(tick, delay); }
+      else {
+        const final = pick(codes);
+        state.position = final;
+        big.textContent = final;
+        lbl.textContent = POSITIONS[final].label;
+        document.getElementById("posReel").style.borderColor = "var(--gold)";
+        document.getElementById("spinPos").disabled = false;
+        document.getElementById("posNext").classList.remove("hidden");
+      }
+    }
+    tick();
+  };
+  document.getElementById("posNext").onclick = () => goto(2);
+}
+
+/* =========================================================
+   STEP 2 — ARCHETYPE SPIN
+   ========================================================= */
+function renderArchetype(){
+  const pos = POSITIONS[state.position];
+  const names = Object.keys(pos.archetypes);
+  const placeholderNote = pos.placeholder
+    ? `<div class="placeholder-note">No custom archetypes loaded yet for ${pos.label} — using a placeholder "Balanced" build. Send over the real archetypes for this position whenever you're ready and I'll wire them in.</div>`
+    : "";
+  document.getElementById("panel").innerHTML = `
+    <h2>Spin For Archetype</h2>
+    <p class="sub">${state.name}'s archetype as a <b>${pos.label}</b> shapes which stats run hot or cold.</p>
+    <div class="arch-grid" id="archGrid">${names.map(n => archCardHTML(n, pos.archetypes[n], pos.stats)).join("")}</div>
+    ${placeholderNote}
+    <div class="row">
+      <button class="btn" id="spinArch">🎲 Spin</button>
+      <button class="btn ghost hidden" id="archNext">Continue →</button>
+    </div>
+  `;
+  document.getElementById("spinArch").onclick = () => {
+    let ticks = 0, maxTicks = 16, delay = 60;
+    document.getElementById("spinArch").disabled = true;
+    function tick(){
+      highlightArch(pick(names));
+      ticks++;
+      if(ticks < maxTicks){ delay *= 1.1; setTimeout(tick, delay); }
+      else {
+        const final = pick(names);
+        state.archetype = final;
+        highlightArch(final);
+        document.getElementById("spinArch").disabled = false;
+        document.getElementById("archNext").classList.remove("hidden");
+      }
+    }
+    tick();
+  };
+  document.getElementById("archNext").onclick = () => goto(3);
+}
+function archCardHTML(name, def, statList){
+  const tags = statList.map(s=>{ const t = tierFor(def, s); return `<span class="tier-tag ${t}">${s} ${t}</span>`; }).join("");
+  return `<div class="arch-card" data-name="${name}"><div class="name">${name}</div><div class="tiers">${tags}</div></div>`;
+}
+function highlightArch(name){
+  document.querySelectorAll(".arch-card").forEach(el=> el.classList.toggle("selected", el.dataset.name === name));
+}
+
+/* =========================================================
+   STEP 3 — STAT SPIN
+   ========================================================= */
+function renderStats(){
+  const pos = POSITIONS[state.position];
+  const archDef = pos.archetypes[state.archetype];
+  document.getElementById("panel").innerHTML = `
+    <h2>Spin For Stats</h2>
+    <p class="sub">Rolling ${pos.label} attributes as a <b>${state.archetype}</b>.</p>
+    <div class="stat-grid" id="statGrid">
+      ${pos.stats.map(s => `
+        <div class="stat-reel" data-stat="${s}">
+          <div class="stat-col">
+            <div class="sname">${STAT_LABELS[s]}</div>
+            <div class="bar-track"><div class="bar-fill" id="bar-${s}" style="width:0%"></div></div>
+          </div>
+          <div class="sval" id="val-${s}">--</div>
+        </div>
+      `).join("")}
+    </div>
+    <div class="row">
+      <button class="btn" id="spinStats">🎰 Spin All</button>
+      <button class="btn ghost hidden" id="statsNext">Continue →</button>
+    </div>
+  `;
+  document.getElementById("spinStats").onclick = () => {
+    document.getElementById("spinStats").disabled = true;
+    pos.stats.forEach((s, i) => spinOneStat(s, archDef, i*120));
+    setTimeout(()=>{
+      document.getElementById("spinStats").disabled = false;
+      document.getElementById("statsNext").classList.remove("hidden");
+    }, pos.stats.length*120 + 900);
+  };
+  document.getElementById("statsNext").onclick = () => goto(4);
+}
+function spinOneStat(statCode, archDef, startDelay){
+  setTimeout(()=>{
+    const tier = tierFor(archDef, statCode);
+    let ticks = 0, maxTicks = 14, delay = 45;
+    const valEl = document.getElementById("val-"+statCode);
+    const barEl = document.getElementById("bar-"+statCode);
+    function tick(){
+      const v = rand(10,99);
+      valEl.textContent = v;
+      barEl.style.width = v+"%";
+      ticks++;
+      if(ticks < maxTicks){ delay *= 1.12; setTimeout(tick, delay); }
+      else {
+        const final = rollStatValue(tier);
+        state.stats[statCode] = final;
+        valEl.textContent = final;
+        barEl.style.width = final+"%";
+        barEl.style.background = tier==="E" ? "var(--tier-e)" : tier==="H" ? "var(--tier-h)" : tier==="L" ? "var(--tier-l)" : "var(--gold)";
+      }
+    }
+    tick();
+  }, startDelay);
+}
+
+/* =========================================================
+   STEP 4 — TRAIT SPIN
+   ========================================================= */
+function renderTraits(){
+  document.getElementById("panel").innerHTML = `
+    <h2>Spin For Traits</h2>
+    <p class="sub">Two traits roll for ${state.name}. <span style="color:var(--chalk-dim)">(Placeholder trait pool — swap in your real list anytime.)</span></p>
+    <div id="traitSlots">
+      <div class="trait-card" id="slot0" style="opacity:0.4">— waiting to spin —</div>
+      <div class="trait-card" id="slot1" style="opacity:0.4">— waiting to spin —</div>
+    </div>
+    <div class="row">
+      <button class="btn" id="spinTraits">✨ Spin</button>
+      <button class="btn ghost hidden" id="traitsNext">Build The Card →</button>
+    </div>
+  `;
+  document.getElementById("spinTraits").onclick = () => {
+    document.getElementById("spinTraits").disabled = true;
+    const pos = POSITIONS[state.position];
+    const chosen = [];
+    while(chosen.length < 2){ const t = pick(TRAITS); if(!chosen.includes(t)) chosen.push(t); }
+    chosen.forEach((t,i)=> spinOneTrait(t, i, pos, i===1 ? 700 : 0));
+    setTimeout(()=>{
+      state.traits = chosen;
+      document.getElementById("spinTraits").disabled = false;
+      document.getElementById("traitsNext").classList.remove("hidden");
+    }, 1500);
+  };
+  document.getElementById("traitsNext").onclick = () => { applyTraitBoosts(); goto(5); };
+}
+function spinOneTrait(trait, slotIndex, pos, startDelay){
+  setTimeout(()=>{
+    let ticks=0, maxTicks=10, delay=60;
+    const slot = document.getElementById("slot"+slotIndex);
+    slot.style.opacity = 1;
+    function tick(){
+      const t = pick(TRAITS);
+      slot.innerHTML = `<div class="tname">${t.name}</div><div class="tdesc">${t.desc}</div>`;
+      ticks++;
+      if(ticks<maxTicks){ delay*=1.12; setTimeout(tick,delay); }
+      else {
+        const applies = pos.stats.includes(trait.stat) ? trait.stat : (pos.stats.includes("END") ? "END" : pos.stats[0]);
+        slot.innerHTML = `<div class="tname">${trait.name}</div><div class="tdesc">${trait.desc}</div>
+          <div class="tboost">${trait.boost>0?"+":""}${trait.boost} ${STAT_LABELS[applies]}</div>`;
+        trait._applied = applies;
+      }
+    }
+    tick();
+  }, startDelay);
+}
+function applyTraitBoosts(){
+  state.traits.forEach(t=>{
+    const stat = t._applied;
+    if(stat && state.stats[stat] !== undefined) state.stats[stat] = clamp(state.stats[stat] + t.boost, 1, 99);
+  });
+}
+
+/* =========================================================
+   STEP 5 — PLAYER CARD
+   ========================================================= */
+function overall(){
+  const pos = POSITIONS[state.position];
+  const sum = pos.stats.reduce((a,s)=>a+(state.stats[s]||0),0);
+  return Math.round(sum/pos.stats.length);
+}
+function renderCard(){
+  const pos = POSITIONS[state.position];
+  const ovr = overall();
+  document.getElementById("panel").innerHTML = `
+    <h2>The Card</h2>
+    <p class="sub">Here's the finished product. Next stop: Draft Day.</p>
+    <div class="player-card">
+      <div class="pc-top">
+        <div>
+          <div class="pc-name">${state.name}</div>
+          <div class="pc-pos">${pos.label.toUpperCase()}${state.team ? " · " + state.team.name.toUpperCase() : ""}</div>
+        </div>
+        <div class="pc-ovr">${ovr}<span class="lbl">OVR</span></div>
+      </div>
+      <div class="pc-arch">Archetype: <b style="color:var(--chalk)">${state.archetype}</b></div>
+      <div class="pc-traits">★ ${state.traits.map(t=>t.name).join("   ★ ")}</div>
+      <div class="pc-stats">${pos.stats.map(s=>`<div class="pc-stat-row"><span>${STAT_LABELS[s]}</span><b>${state.stats[s]}</b></div>`).join("")}</div>
+    </div>
+    <div class="row">
+      <button class="btn ghost" id="restartBtn">↺ Start Over</button>
+      <button class="btn" id="goTeam">Draft Day: Spin For Team →</button>
+    </div>
+  `;
+  document.getElementById("restartBtn").onclick = () => { resetState(); goto(0); };
+  document.getElementById("goTeam").onclick = () => goto(6);
+}
+
+/* =========================================================
+   STEP 6 — TEAM SPIN
+   ========================================================= */
+function renderTeam(){
+  document.getElementById("panel").innerHTML = `
+    <h2>Draft Day</h2>
+    <p class="sub">${state.name} gets selected by one of the league's 14 franchises.</p>
+    <div class="pos-reel" id="teamReel">
+      <div class="big" id="teamBig" style="font-size:24px;">—</div>
+      <div class="label" id="teamLabel">tap spin</div>
+      <div class="grade-row hidden" id="teamGrades">
+        <div><div class="gv" id="teamOff">-</div><div class="gl">Offense</div></div>
+        <div><div class="gv" id="teamDef">-</div><div class="gl">Defense</div></div>
+      </div>
+    </div>
+    <div class="row">
+      <button class="btn" id="spinTeam">📋 Spin</button>
+      <button class="btn ghost hidden" id="teamNext">Kickoff →</button>
+    </div>
+  `;
+  document.getElementById("spinTeam").onclick = () => {
+    const all = flattenLeague();
+    let ticks=0, maxTicks=24, delay=50;
+    const big = document.getElementById("teamBig");
+    const lbl = document.getElementById("teamLabel");
+    document.getElementById("spinTeam").disabled = true;
+    function tick(){
+      const t = pick(all);
+      big.textContent = t.name;
+      lbl.textContent = t.conf + " · " + t.off + " OFF / " + t.def + " DEF";
+      ticks++;
+      if(ticks<maxTicks){ delay*=1.08; setTimeout(tick,delay); }
+      else {
+        const final = pick(all);
+        state.team = final;
+        big.textContent = final.name;
+        lbl.textContent = final.conf + " Conference";
+        document.getElementById("teamGrades").classList.remove("hidden");
+        document.getElementById("teamOff").textContent = final.off;
+        document.getElementById("teamDef").textContent = final.def;
+        document.getElementById("teamReel").style.borderColor = "var(--gold)";
+        document.getElementById("spinTeam").disabled = false;
+        document.getElementById("teamNext").classList.remove("hidden");
+      }
+    }
+    tick();
+  };
+  document.getElementById("teamNext").onclick = () => goto(7);
+}
+
+/* =========================================================
+   STEP 7 — SEASON SIMULATION (14 teams, 16-game schedule)
+   ========================================================= */
+function buildDivisionGames(confTeams){
+  // round robin doubled: every pair plays twice -> each team faces its 6 rivals twice (12 games)
+  const games = [];
+  for(let i=0;i<confTeams.length;i++){
+    for(let j=i+1;j<confTeams.length;j++){
+      games.push([confTeams[i].name, confTeams[j].name]);
+      games.push([confTeams[j].name, confTeams[i].name]);
+    }
+  }
+  return games;
+}
+function buildInterconferenceGames(confA, confB, degree){
+  // bipartite matching so every team gets exactly `degree` interconference games
+  for(let attempt=0; attempt<300; attempt++){
+    const listA = []; confA.forEach(t=>{ for(let i=0;i<degree;i++) listA.push(t.name); });
+    const listB = shuffle((()=>{ const l=[]; confB.forEach(t=>{ for(let i=0;i<degree;i++) l.push(t.name); }); return l; })());
+    const seen = new Set(); const pairs = []; let ok = true;
+    for(let i=0;i<listA.length;i++){
+      const key = listA[i] + "|" + listB[i];
+      if(seen.has(key)){ ok = false; break; }
+      seen.add(key);
+      pairs.push([listA[i], listB[i]]);
+    }
+    if(ok) return pairs;
+  }
+  // fallback: accept duplicates rather than fail
+  const listA = []; confA.forEach(t=>{ for(let i=0;i<degree;i++) listA.push(t.name); });
+  const listB = shuffle((()=>{ const l=[]; confB.forEach(t=>{ for(let i=0;i<degree;i++) l.push(t.name); }); return l; })());
+  return listA.map((a,i)=>[a, listB[i]]);
+}
+function teamPower(t){ return (t.offVal + t.defVal) / 2; }
+function simulateGenericGame(teamA, teamB){
+  const diff = teamPower(teamA) - teamPower(teamB);
+  const probA = 1/(1+Math.pow(10, -diff/14));
+  return Math.random() < probA ? "A" : "B";
+}
+
+function effStat(rawVal, factor){ return clamp(Math.round((rawVal||50)*factor), 1, 99); }
+
+function simulatePlayerGame(oppTeam){
+  const pos = state.position;
+  const isOffense = OFFENSIVE_POS.includes(pos);
+  // tougher opposing D suppresses an offensive player; tougher opposing O creates more chances for a defender
+  const factor = isOffense
+    ? clamp((96 - oppTeam.defVal) / 28, 0.72, 1.28)
+    : clamp((oppTeam.offVal - 60) / 26, 0.75, 1.32);
+
+  const s = {};
+  Object.keys(state.stats).forEach(k => s[k] = effStat(state.stats[k], factor));
+  const consistency = (state.stats.CMP || 50) / 99;
+  const noise = () => (Math.random()-0.5) * (1.3 - consistency);
+  const line = {};
+
+  if(pos === "QB"){
+    const att = rand(22,38);
+    const compPct = clamp(0.45 + (s.ACC/99)*0.35 + noise()*0.12, 0.32, 0.86);
+    const comp = Math.round(att*compPct);
+    const ypc = clamp(8 + (s.ARM/99)*6 + noise()*2, 4, 16);
+    const yards = Math.round(comp*ypc);
+    const tdRoll = (s.ARM + s.ACC + (99-Math.abs(50-s.CMP)))/3/99 + noise();
+    const tds = clamp(Math.round(tdRoll*2.25), 0, 5);
+    const intRoll = clamp((1-(s.INT/99))*0.6 + (1-(s.CMP/99))*0.4 + noise()*0.3, 0, 1);
+    const ints = clamp(Math.round(intRoll*3), 0, 4);
+    Object.assign(line, {att, comp, yards, tds, ints});
+  } else if(pos === "RB"){
+    const carries = rand(10,26);
+    const ypc = clamp(3 + (s.SPD/99)*3 + (s.AGI/99)*1.5 + noise()*1.5, 1.5, 9);
+    const rushYards = Math.round(carries*ypc);
+    const rushTDRoll = (s.STR + s.SPD)/2/99 + noise();
+    const rushTDs = clamp(Math.round(rushTDRoll), 0, 4);
+    const targets = Math.round(2 + (s.HND/99)*4);
+    const recs = Math.round(targets * clamp(0.5+(s.HND/99)*0.4,0.3,0.95));
+    const recYards = Math.round(recs * clamp(5 + (s.AGI/99)*4,3,12));
+    Object.assign(line, {carries, rushYards, rushTDs, recs, recYards});
+  } else if(pos === "WR" || pos === "TE"){
+    const targets = rand(4,12);
+    const catchPct = clamp(0.4 + (s.HND/99)*0.4 + noise()*0.15, 0.25, 0.95);
+    const recs = Math.round(targets*catchPct);
+    const ypr = clamp(8 + (s.SPD/99)*7 + (s.AGI/99)*3 + noise()*3, 4, 22);
+    const recYards = Math.round(recs*ypr);
+    const tdRoll = (s.SPD + s.HND)/2/99 + noise();
+    const recTDs = clamp(Math.round(tdRoll), 0, 3);
+    Object.assign(line, {targets, recs, recYards, recTDs});
+  } else if(pos === "OL"){
+    const pancakes = clamp(Math.round(2 + (s.BLK/99)*7 + noise()*2), 0, 12);
+    const sacksAllowed = clamp(Math.round((1-(s.BLK/99))*2 + noise()), 0, 4);
+    Object.assign(line, {pancakes, sacksAllowed});
+  } else if(pos === "K"){
+    const atts = rand(1,4);
+    const acc = clamp(0.55 + (s.KAC/99)*0.4 + noise()*0.1, 0.4, 0.98);
+    const made = Math.min(atts, Math.round(atts*acc));
+    const longMade = made>0 ? Math.round(30 + (s.KPW/99)*30) : 0;
+    Object.assign(line, {atts, made, longMade});
+  } else { // DL / LB / DB
+    const tackles = clamp(Math.round(2 + (s.TKL/99)*7 + noise()*2), 0, 14);
+    const sacks = (pos==="DL"||pos==="LB") ? clamp(Math.round((s.STR/99)*2 + noise()),0,3) : 0;
+    const ints = (pos==="DB") ? clamp(Math.round((s.INT/99)*1.5 + noise()),0,2) : 0;
+    Object.assign(line, {tackles, sacks, ints});
+  }
+  return line;
+}
+
+function addLine(total, line){ Object.keys(line).forEach(k => total[k] = (total[k]||0) + line[k]); }
+
+function runSeason(){
+  const all = flattenLeague();
+  const byName = {}; all.forEach(t => byName[t.name] = t);
+  const asfc = all.filter(t=>t.conf==="ASFC");
+  const nsfc = all.filter(t=>t.conf==="NSFC");
+
+  const fullSchedule = shuffle([
+    ...buildDivisionGames(asfc),
+    ...buildDivisionGames(nsfc),
+    ...buildInterconferenceGames(asfc, nsfc, 4),
+  ]);
+
+  const standings = {}; all.forEach(t => standings[t.name] = {w:0,l:0});
+  const seasonTotals = {};
+  const gameLog = [];
+  let weekCounter = 0;
+
+  fullSchedule.forEach(([a,b]) => {
+    const winner = simulateGenericGame(byName[a], byName[b]);
+    const winTeam = winner==="A" ? a : b;
+    const loseTeam = winner==="A" ? b : a;
+    standings[winTeam].w++;
+    standings[loseTeam].l++;
+    if(a===state.team.name || b===state.team.name){
+      const opp = a===state.team.name ? b : a;
+      const won = winTeam===state.team.name;
+      weekCounter++;
+      const line = simulatePlayerGame(byName[opp]);
+      addLine(seasonTotals, line);
+      gameLog.push({ week: weekCounter, opp, won, line });
+    }
+  });
+
+  const standingsArr = all.map(t => ({ team:t.name, conf:t.conf, ...standings[t.name] })).sort((x,y)=> y.w-x.w);
+  state.season = { gameLog, seasonTotals, standingsArr };
+}
+
+function awardsFor(){
+  const pos = state.position;
+  const t = state.season.seasonTotals;
+  const awards = [];
+  if(pos==="QB" && t.yards >= 3800) awards.push("4,000-Yard Watch");
+  if(pos==="QB" && t.tds >= 30) awards.push("Pro Bowl Nod");
+  if(pos==="QB" && t.ints <= 8) awards.push("Mr. Reliable");
+  if(pos==="RB" && (t.rushYards||0) >= 1300) awards.push("1,300-Yard Club");
+  if((pos==="WR"||pos==="TE") && (t.recYards||0) >= 1200) awards.push("1,200-Yard Receiver");
+  if((pos==="WR"||pos==="TE") && (t.recTDs||0) >= 10) awards.push("Red Zone Threat");
+  if((pos==="DL"||pos==="LB"||pos==="DB") && (t.tackles||0) >= 100) awards.push("Tackle Machine");
+  if(pos==="DB" && (t.ints||0) >= 6) awards.push("Ball Hawk");
+  if(pos==="K" && t.made/Math.max(1,t.atts) >= 0.85) awards.push("Automatic");
+  if(pos==="OL" && (t.pancakes||0) >= 80) awards.push("Road Grader");
+  if(!awards.length) awards.push("Solid Rookie Campaign");
+  return awards;
+}
+function lineSummary(line, pos){
+  if(pos==="QB") return `${line.comp}/${line.att}, ${line.yards} yds, ${line.tds} TD, ${line.ints} INT`;
+  if(pos==="RB") return `${line.carries} car, ${line.rushYards} yds, ${line.rushTDs} TD · ${line.recs} rec, ${line.recYards} yds`;
+  if(pos==="WR"||pos==="TE") return `${line.recs}/${line.targets}, ${line.recYards} yds, ${line.recTDs} TD`;
+  if(pos==="OL") return `${line.pancakes} pancakes, ${line.sacksAllowed} sacks allowed`;
+  if(pos==="K") return `${line.made}/${line.atts} FG, long ${line.longMade}`;
+  return `${line.tackles} tkl, ${line.sacks} sack, ${line.ints} INT`;
+}
+function totalsSummary(t, pos){
+  if(pos==="QB") return [["Comp/Att",`${t.comp}/${t.att}`],["Yards",t.yards],["TDs",t.tds],["INTs",t.ints]];
+  if(pos==="RB") return [["Carries",t.carries],["Rush Yds",t.rushYards],["Rush TDs",t.rushTDs],["Recs",t.recs],["Rec Yds",t.recYards]];
+  if(pos==="WR"||pos==="TE") return [["Recs",t.recs],["Targets",t.targets],["Rec Yds",t.recYards],["Rec TDs",t.recTDs]];
+  if(pos==="OL") return [["Pancakes",t.pancakes],["Sacks Allowed",t.sacksAllowed]];
+  if(pos==="K") return [["FG Made",t.made],["FG Att",t.atts],["Longest",t.longMade]];
+  return [["Tackles",t.tackles],["Sacks",t.sacks],["INTs",t.ints]];
+}
+
+function renderSeason(){
+  document.getElementById("panel").innerHTML = `
+    <h2>Kickoff</h2>
+    <p class="sub"><b>${state.name}</b> (${state.team.name}, ${state.team.conf}) is set for a 16-game season — 12 division games plus 4 interconference matchups.</p>
+    <div class="row"><button class="btn" id="runBtn">🏟️ Simulate Season</button></div>
+    <div id="seasonResults"></div>
+  `;
+  document.getElementById("runBtn").onclick = () => {
+    document.getElementById("runBtn").disabled = true;
+    document.getElementById("runBtn").textContent = "Simulating...";
+    setTimeout(()=>{ runSeason(); renderSeasonResults(); }, 500);
+  };
+}
+function renderSeasonResults(){
+  const pos = state.position;
+  const { gameLog, seasonTotals, standingsArr } = state.season;
+  const myRecord = standingsArr.find(r=>r.team===state.team.name);
+  const myRank = standingsArr.findIndex(r=>r.team===state.team.name)+1;
+  const awards = awardsFor();
+
+  const totalsHTML = totalsSummary(seasonTotals, pos).map(([k,v])=>`<div class="pc-stat-row"><span>${k}</span><b>${v}</b></div>`).join("");
+  const gamesHTML = gameLog.map(g=>`
+    <tr><td>Wk ${g.week}</td><td>vs ${g.opp}</td><td class="${g.won?'tag-win':'tag-loss'}">${g.won?"W":"L"}</td><td>${lineSummary(g.line, pos)}</td></tr>
+  `).join("");
+  const standingsHTML = standingsArr.map((r,i)=>`
+    <tr class="${r.team===state.team.name?'you':''}"><td>${i+1}</td><td>${r.team} <span class="conf-pill">${r.conf}</span>${r.team===state.team.name?" — You":""}</td><td>${r.w}-${r.l}</td></tr>
+  `).join("");
+
+  document.getElementById("seasonResults").innerHTML = `
+    <div class="section-title">Final Record: ${myRecord.w}-${myRecord.l} · ${myRank}${ordinal(myRank)} of 14</div>
+    <div>${awards.map(a=>`<span class="award">🏆 ${a}</span>`).join("")}</div>
+
+    <div class="section-title">Season Totals</div>
+    <div class="pc-stats" style="grid-template-columns:1fr 1fr;">${totalsHTML}</div>
+
+    <div class="section-title">Game Log</div>
+    <div class="scroll-table"><table><tr><th>Week</th><th>Opponent</th><th>Result</th><th>Stat Line</th></tr>${gamesHTML}</table></div>
+
+    <div class="section-title">Final Standings</div>
+    <div class="scroll-table"><table><tr><th>#</th><th>Team</th><th>Record</th></tr>${standingsHTML}</table></div>
+
+    <div class="row" style="margin-top:22px;"><button class="btn ghost" id="newPlayerBtn">↺ Build Another Player</button></div>
+  `;
+  document.getElementById("newPlayerBtn").onclick = () => { resetState(); goto(0); };
+}
+
+/* =========================================================
+   BOOT
+   ========================================================= */
+const RENDERERS = [renderName, renderPosition, renderArchetype, renderStats, renderTraits, renderCard, renderTeam, renderSeason];
+goto(0);
+</script>
+</body>
+</html>
