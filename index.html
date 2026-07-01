@@ -13,13 +13,14 @@
     --chalk:#F2EFE4;
     --chalk-dim:#B9C4B7;
     --gold:#D9A33E;
-	--elite:#b8f2ed
-    --red:#B3401F;
+	--elite:#22D3EE;
+    --red:#E5484D;
     --ink:#0A0A08;
-    --tier-h:#5FA876;
+    --tier-l:#E5484D;
     --tier-a:#D9A33E;
-    --tier-l:#B3401F;
-	--tier-e:#b8f2ed;
+    --tier-g:#3FA34D;
+    --tier-p:#9ACD32;
+    --tier-e:#22D3EE;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
@@ -48,7 +49,7 @@
   .drive{display:flex;justify-content:space-between;align-items:center;margin:24px 0 28px;gap:4px;flex-wrap:wrap;}
   .down-label{font-family:'Roboto Mono',monospace;font-size:9.5px;text-align:center;color:var(--chalk-dim);letter-spacing:0.5px;flex:1;min-width:60px;}
   .down-label.active{color:var(--gold);font-weight:700;}
-  .down-label.done{color:var(--tier-h);}
+  .down-label.done{color:var(--tier-g);}
 
   .panel{
     background:linear-gradient(180deg, var(--turf-mid), var(--turf-dark));
@@ -96,10 +97,11 @@
   .arch-card .name{font-weight:700;font-size:14px;margin-bottom:4px;}
   .arch-card .tiers{font-family:'Roboto Mono',monospace;font-size:11px;color:var(--chalk-dim);}
   .tier-tag{padding:1px 5px;border-radius:3px;margin-right:4px;display:inline-block;margin-top:4px;}
-  .tier-tag.E{background:rgba(95,168,118,0.18);color:var(--tier-e);}
-  .tier-tag.H{background:rgba(95,168,118,0.18);color:var(--tier-h);}
+  .tier-tag.E{background:rgba(34,211,238,0.16);color:var(--tier-e);}
+  .tier-tag.P{background:rgba(154,205,50,0.16);color:var(--tier-p);}
+  .tier-tag.G{background:rgba(63,163,77,0.16);color:var(--tier-g);}
   .tier-tag.A{background:rgba(217,163,62,0.14);color:var(--tier-a);}
-  .tier-tag.L{background:rgba(179,64,31,0.16);color:var(--tier-l);}
+  .tier-tag.L{background:rgba(229,72,77,0.16);color:var(--tier-l);}
 
   .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;}
   @media (max-width:520px){.stat-grid{grid-template-columns:1fr;}}
@@ -109,6 +111,33 @@
   .bar-track{height:4px;background:rgba(255,255,255,0.08);border-radius:2px;margin-top:6px;overflow:hidden;}
   .bar-fill{height:100%;background:var(--gold);border-radius:2px;transition:width .15s linear;}
   .stat-col{flex:1;}
+
+  .tier-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;}
+  @media (max-width:520px){.tier-grid{grid-template-columns:1fr;}}
+  .tier-card{background:var(--ink);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:12px 14px;}
+  .tier-card .tc-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+  .tier-card .tc-name{font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--chalk-dim);}
+  .tier-card .tc-val{font-family:'Anton',sans-serif;font-size:22px;min-width:34px;text-align:center;padding:2px 8px;border-radius:4px;transition:color .1s ease;}
+  .tier-mini-btn{
+    font-family:'Roboto Mono',monospace;font-size:11px;letter-spacing:0.5px;
+    background:rgba(255,255,255,0.06);color:var(--chalk-dim);border:1px solid rgba(255,255,255,0.14);
+    padding:7px 10px;border-radius:4px;cursor:pointer;width:100%;transition:border-color .12s ease, color .12s ease;
+  }
+  .tier-mini-btn:hover:not(:disabled){border-color:var(--gold);color:var(--chalk);}
+  .tier-mini-btn:disabled{opacity:0.45;cursor:not-allowed;}
+  .tier-mini-btn.locked{color:var(--tier-g);border-color:rgba(63,163,77,0.4);}
+
+  .report-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:16px 0 20px;}
+  @media (max-width:520px){.report-grid{grid-template-columns:1fr;}}
+  .report-row{display:flex;justify-content:space-between;align-items:center;background:var(--ink);border:1px solid rgba(255,255,255,0.08);border-radius:5px;padding:9px 12px;}
+  .report-row .rname{font-size:12px;letter-spacing:0.5px;text-transform:uppercase;color:var(--chalk-dim);}
+  .report-row .rgrade{font-family:'Anton',sans-serif;font-size:18px;}
+  .archetype-reveal{
+    text-align:center;border:2px solid var(--gold);border-radius:8px;padding:20px;margin-bottom:6px;
+    background:rgba(217,163,62,0.06);
+  }
+  .archetype-reveal .arv-label{font-size:11px;letter-spacing:2px;color:var(--chalk-dim);text-transform:uppercase;}
+  .archetype-reveal .arv-name{font-family:'Anton',sans-serif;font-size:30px;color:var(--gold);margin-top:4px;}
 
   .trait-card{border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:14px;margin-bottom:8px;background:rgba(255,255,255,0.02);}
   .trait-card .tname{color:var(--gold);font-weight:700;font-size:14px;}
@@ -135,7 +164,7 @@
   th,td{padding:6px 8px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.07);}
   th{color:var(--gold);font-size:11px;letter-spacing:1px;text-transform:uppercase;}
   tr.you{background:rgba(217,163,62,0.08);}
-  .tag-win{color:var(--tier-h);font-weight:700;}
+  .tag-win{color:var(--tier-g);font-weight:700;}
   .tag-loss{color:var(--tier-l);font-weight:700;}
   .scroll-table{max-height:340px;overflow-y:auto;border:1px solid rgba(255,255,255,0.08);border-radius:6px;}
   .section-title{font-family:'Anton',sans-serif;color:var(--gold);font-size:18px;margin:26px 0 8px;}
@@ -171,46 +200,113 @@ const STAT_LABELS = {
   ARM:"Arm Strength", ACC:"Arm Accuracy"
 };
 
-const TIERS = { E: [88,99], H:[76,87], A:[55,75], L:[5,54] };
+const TIERS = { E:[91,99], P:[81,90], G:[70,80], A:[55,69], L:[5,54] };
+const TIER_ORDER = ["L","A","G","P","E"];
+const TIER_VALUE = { L:1, A:2, G:3, P:4, E:5 };
+const TIER_FULL_NAME = { L:"Low", A:"Average", G:"Good", P:"Pro", E:"Elite" };
+const TIER_GRADE = { E:"A+", P:"A", G:"B+", A:"C+", L:"D" };
+const TIER_COLOR_VAR = { E:"var(--tier-e)", P:"var(--tier-p)", G:"var(--tier-g)", A:"var(--tier-a)", L:"var(--tier-l)" };
 
 const POSITIONS = {
   QB: { label:"Quarterback", stats:["STR","AGI","INT","SPD","END","CMP","ARM","ACC"],
-    archetypes: {
-      "Gunslinger":     { STR:"A", AGI:"A", INT:"H", SPD:"A", ARM:"E", ACC:"A", END:"A", CMP:"A" },
-      "Pocket Passer":  { STR:"A", AGI:"A", INT:"H", SPD:"A", ARM:"A", ACC:"E", END:"A", CMP:"A" },
-      "Field General":  { STR:"A", AGI:"A", INT:"E", SPD:"A", ARM:"H", ACC:"H", END:"A", CMP:"A"},
-      "Scrambler":      { STR:"A", AGI:"A", INT:"H", SPD:"E", ARM:"A", ACC:"A", END:"A", CMP:"A" },
-      "Mobile":         { STR:"H", AGI:"A", INT:"H", SPD:"H", ARM:"A", ACC:"A", END:"A", CMP:"A" },
+    signatures: {
+      "Gunslinger":     { STR:"G", AGI:"G", INT:"G", SPD:"A", ARM:"E", ACC:"G", END:"A", CMP:"G" },
+      "Pocket Passer":  { STR:"G", AGI:"A", INT:"P", SPD:"A", ARM:"P", ACC:"E", END:"A", CMP:"G" },
+      "Field General":  { STR:"G", AGI:"G", INT:"E", SPD:"A", ARM:"P", ACC:"P", END:"A", CMP:"P"},
+      "Scrambler":      { STR:"G", AGI:"P", INT:"P", SPD:"E", ARM:"G", ACC:"G", END:"G", CMP:"A" },
+      "Mobile":         { STR:"P", AGI:"G", INT:"G", SPD:"G", ARM:"G", ACC:"A", END:"G", CMP:"A" },
     }},
   RB: { label:"Running Back", stats:["STR","AGI","INT","SPD","HND","BLK","END","CMP"],
-    archetypes: {
-      "Power Back":      { STR:"H", AGI:"H", INT:"A", SPD:"H", HND:"A", BLK:"A", END:"H", CMP:"A" },
-      "Speed Back":      { STR:"A", AGI:"H", INT:"A", SPD:"E", HND:"A", BLK:"L", END:"A", CMP:"A" },
-      "Receiving Back":  { STR:"A", AGI:"H", INT:"A", SPD:"H", HND:"H", BLK:"A", END:"A", CMP:"A" },
-      "Fullback":        { STR:"H", AGI:"A", INT:"A", SPD:"A", HND:"A", BLK:"E", END:"A", CMP:"A" },
+    signatures: {
+      "Power Back":      { STR:"E", AGI:"G", INT:"A", SPD:"P", HND:"G", BLK:"G", END:"P", CMP:"A" },
+      "Speed Back":      { STR:"A", AGI:"P", INT:"A", SPD:"E", HND:"A", BLK:"L", END:"A", CMP:"P" },
+      "Receiving Back":  { STR:"G", AGI:"G", INT:"G", SPD:"P", HND:"E", BLK:"A", END:"A", CMP:"A" },
+      "Fullback":        { STR:"P", AGI:"A", INT:"A", SPD:"G", HND:"A", BLK:"E", END:"A", CMP:"A" },
     }},
   WR: { label:"Wide Receiver", stats:["STR","AGI","INT","SPD","HND","BLK","END","CMP"],
-    archetypes: {
-      "Speed Receiver":      { STR:"A", AGI:"H", INT:"A", SPD:"E", HND:"H", BLK:"L", END:"A", CMP:"A" },
-      "Slot Receiver":       { STR:"A", AGI:"H", INT:"A", SPD:"H", HND:"H", BLK:"A", END:"H", CMP:"A" },
-      "Possession Receiver": { STR:"H", AGI:"A", INT:"H", SPD:"A", HND:"E", BLK:"L", END:"A", CMP:"A" },
+    signatures: {
+      "Speed Receiver":      { STR:"A", AGI:"G", INT:"A", SPD:"E", HND:"G", BLK:"L", END:"A", CMP:"G" },
+      "Slot Receiver":       { STR:"G", AGI:"P", INT:"G", SPD:"G", HND:"P", BLK:"A", END:"G", CMP:"G" },
+      "Possession Receiver": { STR:"P", AGI:"G", INT:"G", SPD:"G", HND:"E", BLK:"L", END:"G", CMP:"A" },
     }},
 };
 const OFFENSIVE_POS = ["QB","RB","WR"];
 
+// Given a position and the tiers the player rolled for each attribute, finds
+// the closest-matching archetype signature (lowest total tier distance).
+function matchArchetype(posCode, tiers){
+  const pos = POSITIONS[posCode];
+  if(!pos.signatures) return "Balanced";
+  let best = null, bestScore = Infinity;
+  Object.keys(pos.signatures).forEach(name=>{
+    const sig = pos.signatures[name];
+    let score = 0;
+    pos.stats.forEach(s=>{
+      const expected = TIER_VALUE[sig[s] || "A"];
+      const rolled = TIER_VALUE[tiers[s] || "A"];
+      score += Math.abs(expected - rolled);
+    });
+    if(score < bestScore){ bestScore = score; best = name; }
+  });
+  return best;
+}
+
+// Archetype-specific tendencies for the season simulation — these push each
+// archetype's stat line in its intended direction on top of the raw attributes.
+const QB_RUSH_PROFILE = {
+  "Scrambler":      { carryRange:[5,10], ypcAdj: 2.5, tdMult:1.6, passYardMult:0.90 },
+  "Mobile":         { carryRange:[3,6],  ypcAdj: 0.8, tdMult:1.15, passYardMult:0.97 },
+  "Gunslinger":     { carryRange:[0,2],  ypcAdj:-1.0, tdMult:0.3, passYardMult:1.0 },
+  "Pocket Passer":  { carryRange:[0,1],  ypcAdj:-1.5, tdMult:0.2, passYardMult:1.0 },
+  "Field General":  { carryRange:[0,2],  ypcAdj:-1.0, tdMult:0.3, passYardMult:1.0 },
+};
+const RB_ARCHETYPE_PROFILE = {
+  "Power Back":      { carryMult:1.05, rushYpcAdj:-0.4,  rushTDMult:1.7, targetMult:0.8,  catchMult:1.0,  recYprAdj:-0.5,  recTDMult:0.7 },
+  "Speed Back":      { carryMult:1.0,  rushYpcAdj: 0.9,  rushTDMult:1.0, targetMult:0.5,  catchMult:0.85, recYprAdj:-1.5,  recTDMult:0.5 },
+  "Receiving Back":  { carryMult:0.7,  rushYpcAdj:-1.3,  rushTDMult:0.7, targetMult:1.35, catchMult:1.1,  recYprAdj: 0.5,  recTDMult:1.5 },
+  "Fullback":        { carryMult:0.32, rushYpcAdj:-1.8,  rushTDMult:0.9, targetMult:0.38, catchMult:0.9,  recYprAdj:-2.0,  recTDMult:0.4 },
+};
+const WR_ARCHETYPE_PROFILE = {
+  "Speed Receiver":      { targetMult:0.88, catchMult:0.92, yprAdj: 7,  tdMult:1.35, dropShareAdj: 0.05 },
+  "Possession Receiver": { targetMult:1.05, catchMult:1.05, yprAdj:-3,  tdMult:0.85, dropShareAdj:-0.12 },
+  "Slot Receiver":       { targetMult:1.0,  catchMult:1.0,  yprAdj: 0,  tdMult:1.0,  dropShareAdj: 0 },
+};
+
+// Importance weights per position — higher weight = bigger influence on OVR
+// and on that stat's impact within the season-stat formulas below.
+const STAT_WEIGHTS = {
+  QB: { ARM:2, ACC:2, INT:1.5, STR:1, AGI:1, SPD:1, END:1, CMP:1 },
+  RB: { SPD:2, STR:1.5, AGI:1.5, HND:1.3, INT:1.15, BLK:1, END:1, CMP:1 },
+  WR: { SPD:2, STR:1.5, AGI:1.5, HND:1.3, INT:1.15, BLK:1, END:1, CMP:1 },
+};
+function weightFor(pos, code){ return (STAT_WEIGHTS[pos] && STAT_WEIGHTS[pos][code]) || 1; }
+
 // PLACEHOLDER traits — swap in your real trait list whenever you're ready.
 const TRAITS = [
-  { name:"Iron Man",     	 desc:"I want all the minutes",          		stat:"END", boost:8 },
-	  { name:"True Competitor",  desc:"Not here by accident",        	    stat:"CMP", boost:8 },
-  { name:"Sim League Vet",   desc:"Back in my day...",    			 		stat:"INT", boost:8 },
-  { name:"Glue Hands", 	 	 desc:"Give me the ball!",               		stat:"HND", boost:8 },
-  { name:"Athlete",       	 desc:"Everyone's Favorite",       		 		stat:"SPD", boost:8 },
-  { name:"Team Player",  	 desc:"Play me at FB, I don't care.",    		stat:"BLK", boost:8 },
-  { name:"DND",     	 	 desc:"With the last overall pick...", 	 		stat:"INT", boost:-6 },
-  { name:"Gym Rat",      	 desc:"Speed? Just hit him.",       			stat:"STR", boost:8 },
-  { name:"Server-Hopper", 	 desc:"Electric but unpredictable.",     		stat:"AGI", boost:8 },
-  { name:"Mr. Reliable",     desc:"Waters the tree and says Good Morning",	stat:"TKL", boost:8 },
-  { name:"IA",     			 desc:"If you're reading this, please contact your GMs",	stat:"SPD", boost:-6 },
+  { name:"Iron Man",       	 desc:"I want all the minutes",          		stat:"END", boost:8 },
+  { name:"True Competitor", 	 desc:"Not here by accident",        	    	stat:"CMP", boost:8 },
+  { name:"Sim League Vet",  	 desc:"Back in my day...",    			 	stat:"INT", boost:8 },
+  { name:"Glue Hands",     	 desc:"Give me the ball!",               		stat:"HND", boost:8 },
+  { name:"Athlete",         	 desc:"Everyone's Favorite",       		 	stat:"SPD", boost:8 },
+  { name:"Team Player",    	 desc:"Play me at FB, I don't care.",    		stat:"BLK", boost:8 },
+  { name:"DND",     	 	 desc:"With the last overall pick...", 	 	stat:"INT", boost:-6 },
+  { name:"Gym Rat",        	 desc:"Speed? Just hit him.",       			stat:"STR", boost:8 },
+  { name:"Server-Hopper",  	 desc:"Electric but unpredictable.",     		stat:"AGI", boost:8 },
+  { name:"Mr. Reliable",     	 desc:"Waters the tree and says Good Morning",	stat:"TKL", boost:8 },
+  { name:"IA",     		 desc:"If you're reading this, please contact your GMs",	stat:"SPD", boost:-6 },
+  { name:"Workhorse",      	 desc:"Never leaves the field.",         		stat:"END", boost:8 },
+  { name:"Vocal Leader",   	 desc:"The huddle listens when he talks.", 	stat:"CMP", boost:8 },
+  { name:"Tape Study",     	 desc:"Beats you before the snap.",       		stat:"INT", boost:8 },
+  { name:"Vice Grip",      	 desc:"The ball doesn't come out.",       		stat:"HND", boost:8 },
+  { name:"Track Star",     	 desc:"Ran track in the offseason, it shows.", stat:"SPD", boost:8 },
+  { name:"Road Grader",    	 desc:"Clears a lane and keeps clearing it.", 	stat:"BLK", boost:8 },
+  { name:"Camera Shy",     	 desc:"Disappears when the lights come on.", 	stat:"CMP", boost:-6 },
+  { name:"Weight Room Legend",  desc:"Maxes out everything but the playbook.", stat:"STR", boost:8 },
+  { name:"Shifty",         	 desc:"Ankles for days.",                 		stat:"AGI", boost:8 },
+  { name:"Menace",         	 desc:"Brings physicality every snap.",   		stat:"TKL", boost:8 },
+  { name:"Late Riser",     	 desc:"Slow starter, historically.",      		stat:"SPD", boost:-6 },
+  { name:"Cinderella Story",    desc:"Wasn't even supposed to be here.",  	stat:"CMP", boost:6 },
+  { name:"Glass",          	 desc:"Great tape, when he's on the field.", 	stat:"END", boost:-6 },
 ];
 
 // Real league. Two 7-team conferences, 14 teams total, letter-graded offense/defense.
@@ -251,10 +347,12 @@ function flattenLeague(){
    ========================================================= */
 const state = {
   step: 0, name: "", position: null, archetype: null,
-  stats: {}, traits: [], team: null, season: null,
+  tiers: {}, stats: {}, traits: [], team: null, season: null,
+  _spinCounts: { position:0, tiers:{}, values:0, traits:0, team:0 },
 };
 function resetState(){
-  Object.assign(state, { step:0, name:"", position:null, archetype:null, stats:{}, traits:[], team:null, season:null });
+  Object.assign(state, { step:0, name:"", position:null, archetype:null, tiers:{}, stats:{}, traits:[], team:null, season:null,
+    _spinCounts: { position:0, tiers:{}, values:0, traits:0, team:0 } });
 }
 
 /* =========================================================
@@ -265,15 +363,21 @@ const pick = arr => arr[Math.floor(Math.random()*arr.length)];
 const clamp = (v,lo,hi) => Math.max(lo, Math.min(hi, v));
 function shuffle(arr){ const a=[...arr]; for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 function rollStatValue(tier){ const [lo,hi] = TIERS[tier] || TIERS.A; return rand(lo,hi); }
-function tierFor(archDef, statCode){ return (archDef && archDef[statCode]) ? archDef[statCode] : "A"; }
 function ordinal(n){ const s=["th","st","nd","rd"], v=n%100; return s[(v-20)%10] || s[v] || s[0]; }
+
+// One reroll allowed per step: first click = initial spin, second click = the
+// one reroll, then the button locks. Call spinLabel(btn, spinsLeft) to update text.
+function spinLabel(btn, spinsLeft){
+  if(spinsLeft <= 0){ btn.disabled = true; btn.textContent = "No Rerolls Left"; }
+  else { btn.disabled = false; btn.textContent = "🔁 Reroll (1 left)"; }
+}
 
 /* =========================================================
    RENDER: drive bar
    ========================================================= */
 function renderDrive(){
   const bar = document.getElementById("driveBar");
-  const labels = ["1ST & NAME","2ND & POSITION","3RD & ARCHETYPE","4TH & STATS","GOAL LINE: TRAITS","THE CARD","DRAFT DAY","KICKOFF"];
+  const labels = ["1ST & NAME","2ND & POSITION","3RD & ATTRIBUTES","REPORT CARD","4TH & RATINGS","GOAL LINE: TRAITS","THE CARD","DRAFT DAY","KICKOFF"];
   bar.innerHTML = labels.map((l,i)=>{
     const cls = i < state.step ? "done" : (i===state.step ? "active":"");
     return `<div class="down-label ${cls}">${l}</div>`;
@@ -320,11 +424,14 @@ function renderPosition(){
     </div>
   `;
   document.getElementById("spinPos").onclick = () => {
+    if(state._spinCounts.position >= 2) return;
+    state._spinCounts.position++;
     const codes = Object.keys(POSITIONS);
     let ticks = 0, maxTicks = 22, delay = 50;
     const big = document.getElementById("posBig");
     const lbl = document.getElementById("posLabel");
-    document.getElementById("spinPos").disabled = true;
+    const btn = document.getElementById("spinPos");
+    btn.disabled = true;
     function tick(){
       const c = pick(codes);
       big.textContent = c;
@@ -337,7 +444,7 @@ function renderPosition(){
         big.textContent = final;
         lbl.textContent = POSITIONS[final].label;
         document.getElementById("posReel").style.borderColor = "var(--gold)";
-        document.getElementById("spinPos").disabled = false;
+        spinLabel(btn, 2 - state._spinCounts.position);
         document.getElementById("posNext").classList.remove("hidden");
       }
     }
@@ -347,65 +454,110 @@ function renderPosition(){
 }
 
 /* =========================================================
-   STEP 2 — ARCHETYPE SPIN
+   STEP 2 — ATTRIBUTE TIER SPINS (Low/Average/Good/Pro/Elite)
    ========================================================= */
-function renderArchetype(){
+function renderAttributeTiers(){
   const pos = POSITIONS[state.position];
-  const names = Object.keys(pos.archetypes);
-  const placeholderNote = pos.placeholder
-    ? `<div class="placeholder-note">No custom archetypes loaded yet for ${pos.label} — using a placeholder "Balanced" build. Send over the real archetypes for this position whenever you're ready and I'll wire them in.</div>`
-    : "";
+  pos.stats.forEach(s => { if(state._spinCounts.tiers[s] === undefined) state._spinCounts.tiers[s] = 0; });
   document.getElementById("panel").innerHTML = `
-    <h2>Spin For Archetype</h2>
-    <p class="sub">${state.name}'s archetype as a <b>${pos.label}</b> shapes which stats run hot or cold.</p>
-    <div class="arch-grid" id="archGrid">${names.map(n => archCardHTML(n, pos.archetypes[n], pos.stats)).join("")}</div>
-    ${placeholderNote}
+    <h2>Spin For Attributes</h2>
+    <p class="sub">Spin each ${pos.label} attribute for its tier: <span style="color:var(--tier-l)">Low</span> · <span style="color:var(--tier-a)">Average</span> · <span style="color:var(--tier-g)">Good</span> · <span style="color:var(--tier-p)">Pro</span> · <span style="color:var(--tier-e)">Elite</span>. One free reroll per attribute.</p>
+    <div class="tier-grid" id="tierGrid">
+      ${pos.stats.map(s => `
+        <div class="tier-card" data-stat="${s}">
+          <div class="tc-top">
+            <span class="tc-name">${STAT_LABELS[s]}</span>
+            <span class="tc-val" id="tval-${s}" style="color:var(--chalk-dim)">—</span>
+          </div>
+          <button class="tier-mini-btn" id="tbtn-${s}">🎲 Spin</button>
+        </div>
+      `).join("")}
+    </div>
     <div class="row">
-      <button class="btn" id="spinArch">🎲 Spin</button>
-      <button class="btn ghost hidden" id="archNext">Continue →</button>
+      <button class="btn ghost hidden" id="tiersNext">See Report Card →</button>
     </div>
   `;
-  document.getElementById("spinArch").onclick = () => {
-    let ticks = 0, maxTicks = 16, delay = 60;
-    document.getElementById("spinArch").disabled = true;
-    function tick(){
-      highlightArch(pick(names));
-      ticks++;
-      if(ticks < maxTicks){ delay *= 1.1; setTimeout(tick, delay); }
-      else {
-        const final = pick(names);
-        state.archetype = final;
-        highlightArch(final);
-        document.getElementById("spinArch").disabled = false;
-        document.getElementById("archNext").classList.remove("hidden");
-      }
-    }
-    tick();
+  pos.stats.forEach(s => {
+    document.getElementById("tbtn-"+s).onclick = () => spinTier(s);
+  });
+  document.getElementById("tiersNext").onclick = () => {
+    state.archetype = matchArchetype(state.position, state.tiers);
+    goto(3);
   };
-  document.getElementById("archNext").onclick = () => goto(3);
+  maybeShowTiersNext();
 }
-function archCardHTML(name, def, statList){
-  const tags = statList.map(s=>{ const t = tierFor(def, s); return `<span class="tier-tag ${t}">${s} ${t}</span>`; }).join("");
-  return `<div class="arch-card" data-name="${name}"><div class="name">${name}</div><div class="tiers">${tags}</div></div>`;
+function maybeShowTiersNext(){
+  const pos = POSITIONS[state.position];
+  const allRolled = pos.stats.every(s => state.tiers[s]);
+  document.getElementById("tiersNext").classList.toggle("hidden", !allRolled);
 }
-function highlightArch(name){
-  document.querySelectorAll(".arch-card").forEach(el=> el.classList.toggle("selected", el.dataset.name === name));
+function spinTier(statCode){
+  if(state._spinCounts.tiers[statCode] >= 2) return;
+  state._spinCounts.tiers[statCode]++;
+  const btn = document.getElementById("tbtn-"+statCode);
+  const valEl = document.getElementById("tval-"+statCode);
+  btn.disabled = true;
+  let ticks = 0, maxTicks = 12, delay = 55;
+  function tick(){
+    const t = pick(TIER_ORDER);
+    valEl.textContent = t;
+    valEl.style.color = TIER_COLOR_VAR[t];
+    ticks++;
+    if(ticks < maxTicks){ delay *= 1.12; setTimeout(tick, delay); }
+    else {
+      const final = pick(TIER_ORDER);
+      state.tiers[statCode] = final;
+      valEl.textContent = final;
+      valEl.style.color = TIER_COLOR_VAR[final];
+      const left = 2 - state._spinCounts.tiers[statCode];
+      if(left <= 0){ btn.disabled = true; btn.textContent = "Locked"; btn.classList.add("locked"); }
+      else { btn.disabled = false; btn.textContent = "🔁 Reroll (1 left)"; }
+      maybeShowTiersNext();
+    }
+  }
+  tick();
 }
 
 /* =========================================================
-   STEP 3 — STAT SPIN
+   STEP 3 — REPORT CARD
    ========================================================= */
-function renderStats(){
+function renderReportCard(){
   const pos = POSITIONS[state.position];
-  const archDef = pos.archetypes[state.archetype];
   document.getElementById("panel").innerHTML = `
-    <h2>Spin For Stats</h2>
-    <p class="sub">Rolling ${pos.label} attributes as a <b>${state.archetype}</b>.</p>
+    <h2>Scouting Report</h2>
+    <p class="sub">${state.name}'s attribute grades are in.</p>
+    <div class="archetype-reveal">
+      <div class="arv-label">You've Built a:</div>
+      <div class="arv-name">${state.archetype} ${state.position}</div>
+    </div>
+    <div class="report-grid">
+      ${pos.stats.map(s => `
+        <div class="report-row">
+          <span class="rname">${STAT_LABELS[s]}</span>
+          <span class="rgrade" style="color:${TIER_COLOR_VAR[state.tiers[s]]}">${TIER_GRADE[state.tiers[s]]}</span>
+        </div>
+      `).join("")}
+    </div>
+    <div class="row">
+      <button class="btn" id="reportNext">Spin Final Ratings →</button>
+    </div>
+  `;
+  document.getElementById("reportNext").onclick = () => goto(4);
+}
+
+/* =========================================================
+   STEP 4 — ATTRIBUTE VALUE SPINS (numeric, within rolled tier)
+   ========================================================= */
+function renderAttributeValues(){
+  const pos = POSITIONS[state.position];
+  document.getElementById("panel").innerHTML = `
+    <h2>Spin For Ratings</h2>
+    <p class="sub">Rolling exact numbers within each attribute's tier range.</p>
     <div class="stat-grid" id="statGrid">
       ${pos.stats.map(s => `
         <div class="stat-reel" data-stat="${s}">
           <div class="stat-col">
-            <div class="sname">${STAT_LABELS[s]}</div>
+            <div class="sname">${STAT_LABELS[s]} <span style="color:${TIER_COLOR_VAR[state.tiers[s]]}">(${TIER_FULL_NAME[state.tiers[s]]})</span></div>
             <div class="bar-track"><div class="bar-fill" id="bar-${s}" style="width:0%"></div></div>
           </div>
           <div class="sval" id="val-${s}">--</div>
@@ -418,18 +570,20 @@ function renderStats(){
     </div>
   `;
   document.getElementById("spinStats").onclick = () => {
-    document.getElementById("spinStats").disabled = true;
-    pos.stats.forEach((s, i) => spinOneStat(s, archDef, i*120));
+    if(state._spinCounts.values >= 2) return;
+    state._spinCounts.values++;
+    const btn = document.getElementById("spinStats");
+    btn.disabled = true;
+    pos.stats.forEach((s, i) => spinOneStat(s, state.tiers[s], i*120));
     setTimeout(()=>{
-      document.getElementById("spinStats").disabled = false;
+      spinLabel(btn, 2 - state._spinCounts.values);
       document.getElementById("statsNext").classList.remove("hidden");
     }, pos.stats.length*120 + 900);
   };
-  document.getElementById("statsNext").onclick = () => goto(4);
+  document.getElementById("statsNext").onclick = () => goto(5);
 }
-function spinOneStat(statCode, archDef, startDelay){
+function spinOneStat(statCode, tier, startDelay){
   setTimeout(()=>{
-    const tier = tierFor(archDef, statCode);
     let ticks = 0, maxTicks = 14, delay = 45;
     const valEl = document.getElementById("val-"+statCode);
     const barEl = document.getElementById("bar-"+statCode);
@@ -444,7 +598,7 @@ function spinOneStat(statCode, archDef, startDelay){
         state.stats[statCode] = final;
         valEl.textContent = final;
         barEl.style.width = final+"%";
-        barEl.style.background = tier==="E" ? "var(--tier-e)" : tier==="H" ? "var(--tier-h)" : tier==="L" ? "var(--tier-l)" : "var(--gold)";
+        barEl.style.background = TIER_COLOR_VAR[tier] || "var(--gold)";
       }
     }
     tick();
@@ -452,15 +606,16 @@ function spinOneStat(statCode, archDef, startDelay){
 }
 
 /* =========================================================
-   STEP 4 — TRAIT SPIN
+   STEP 5 — TRAIT SPIN
    ========================================================= */
 function renderTraits(){
   document.getElementById("panel").innerHTML = `
     <h2>Spin For Traits</h2>
-    <p class="sub">Two traits roll for ${state.name}. <span style="color:var(--chalk-dim)">(Placeholder trait pool — swap in your real list anytime.)</span></p>
+    <p class="sub">Three traits roll for ${state.name}. <span style="color:var(--chalk-dim)">(Placeholder trait pool — swap in your real list anytime.)</span></p>
     <div id="traitSlots">
       <div class="trait-card" id="slot0" style="opacity:0.4">— waiting to spin —</div>
       <div class="trait-card" id="slot1" style="opacity:0.4">— waiting to spin —</div>
+      <div class="trait-card" id="slot2" style="opacity:0.4">— waiting to spin —</div>
     </div>
     <div class="row">
       <button class="btn" id="spinTraits">✨ Spin</button>
@@ -468,18 +623,21 @@ function renderTraits(){
     </div>
   `;
   document.getElementById("spinTraits").onclick = () => {
-    document.getElementById("spinTraits").disabled = true;
+    if(state._spinCounts.traits >= 2) return;
+    state._spinCounts.traits++;
+    const btn = document.getElementById("spinTraits");
+    btn.disabled = true;
     const pos = POSITIONS[state.position];
     const chosen = [];
-    while(chosen.length < 2){ const t = pick(TRAITS); if(!chosen.includes(t)) chosen.push(t); }
-    chosen.forEach((t,i)=> spinOneTrait(t, i, pos, i===1 ? 700 : 0));
+    while(chosen.length < 3){ const t = pick(TRAITS); if(!chosen.includes(t)) chosen.push(t); }
+    chosen.forEach((t,i)=> spinOneTrait(t, i, pos, i*700));
     setTimeout(()=>{
       state.traits = chosen;
-      document.getElementById("spinTraits").disabled = false;
+      spinLabel(btn, 2 - state._spinCounts.traits);
       document.getElementById("traitsNext").classList.remove("hidden");
-    }, 1500);
+    }, chosen.length*700 + 800);
   };
-  document.getElementById("traitsNext").onclick = () => { applyTraitBoosts(); goto(5); };
+  document.getElementById("traitsNext").onclick = () => { applyTraitBoosts(); goto(6); };
 }
 function spinOneTrait(trait, slotIndex, pos, startDelay){
   setTimeout(()=>{
@@ -513,8 +671,13 @@ function applyTraitBoosts(){
    ========================================================= */
 function overall(){
   const pos = POSITIONS[state.position];
-  const sum = pos.stats.reduce((a,s)=>a+(state.stats[s]||0),0);
-  return Math.round(sum/pos.stats.length);
+  let wsum = 0, vsum = 0;
+  pos.stats.forEach(s=>{
+    const w = weightFor(state.position, s);
+    vsum += (state.stats[s]||0) * w;
+    wsum += w;
+  });
+  return Math.round(vsum/wsum);
 }
 function renderCard(){
   const pos = POSITIONS[state.position];
@@ -540,11 +703,11 @@ function renderCard(){
     </div>
   `;
   document.getElementById("restartBtn").onclick = () => { resetState(); goto(0); };
-  document.getElementById("goTeam").onclick = () => goto(6);
+  document.getElementById("goTeam").onclick = () => goto(7);
 }
 
 /* =========================================================
-   STEP 6 — TEAM SPIN
+   STEP 7 — TEAM SPIN
    ========================================================= */
 function renderTeam(){
   document.getElementById("panel").innerHTML = `
@@ -564,11 +727,14 @@ function renderTeam(){
     </div>
   `;
   document.getElementById("spinTeam").onclick = () => {
+    if(state._spinCounts.team >= 2) return;
+    state._spinCounts.team++;
     const all = flattenLeague();
     let ticks=0, maxTicks=24, delay=50;
     const big = document.getElementById("teamBig");
     const lbl = document.getElementById("teamLabel");
-    document.getElementById("spinTeam").disabled = true;
+    const btn = document.getElementById("spinTeam");
+    btn.disabled = true;
     function tick(){
       const t = pick(all);
       big.textContent = t.name;
@@ -584,13 +750,13 @@ function renderTeam(){
         document.getElementById("teamOff").textContent = final.off;
         document.getElementById("teamDef").textContent = final.def;
         document.getElementById("teamReel").style.borderColor = "var(--gold)";
-        document.getElementById("spinTeam").disabled = false;
+        spinLabel(btn, 2 - state._spinCounts.team);
         document.getElementById("teamNext").classList.remove("hidden");
       }
     }
     tick();
   };
-  document.getElementById("teamNext").onclick = () => goto(7);
+  document.getElementById("teamNext").onclick = () => goto(8);
 }
 
 /* =========================================================
@@ -632,8 +798,30 @@ function simulateGenericGame(teamA, teamB){
   const probA = 1/(1+Math.pow(10, -diff/14));
   return Math.random() < probA ? "A" : "B";
 }
+// Some archetypes (like Fullback) show up light in their own stat line but
+// give their team's offense a real boost — reflected here as a small power bump.
+function teamContributionBonus(){
+  if(state.position === "RB" && state.archetype === "Fullback"){
+    const blk = state.stats.BLK || 50;
+    return { off: 2 + (blk-50)/99*3, def: 0 };
+  }
+  return { off: 0, def: 0 };
+}
 
 function effStat(rawVal, factor){ return clamp(Math.round((rawVal||50)*factor), 1, 99); }
+// Weighted stats swing further from average before formulas see them, so
+// "important" attributes (per STAT_WEIGHTS) matter more to the stat line.
+function weightAdjust(rawVal, weight){ return clamp(Math.round(50 + ((rawVal||50)-50)*weight), 1, 99); }
+
+// Samples a realistic per-game TD count from a scoring-rate (lambda = expected TDs/game)
+// instead of rounding a single average, so most games are 0-1 TDs with occasional 2-3+ games.
+function poissonSample(lambda){
+  if(lambda <= 0) return 0;
+  const L = Math.exp(-lambda);
+  let k = 0, p = 1;
+  do { k++; p *= Math.random(); } while(p > L);
+  return k - 1;
+}
 
 function simulatePlayerGame(oppTeam){
   const pos = state.position;
@@ -644,41 +832,61 @@ function simulatePlayerGame(oppTeam){
     : clamp((oppTeam.offVal - 60) / 26, 0.75, 1.32);
 
   const s = {};
-  Object.keys(state.stats).forEach(k => s[k] = effStat(state.stats[k], factor));
+  Object.keys(state.stats).forEach(k => {
+    const weighted = weightAdjust(state.stats[k], weightFor(pos, k));
+    s[k] = effStat(weighted, factor);
+  });
   const consistency = (state.stats.CMP || 50) / 99;
   const noise = () => (Math.random()-0.5) * (1.3 - consistency);
   const line = {};
 
   if(pos === "QB"){
+    const rushProfile = QB_RUSH_PROFILE[state.archetype] || QB_RUSH_PROFILE["Field General"];
     const att = rand(22,38);
     const compPct = clamp(0.45 + (s.ACC/99)*0.35 + noise()*0.12, 0.32, 0.86);
     const comp = Math.round(att*compPct);
     const ypc = clamp(8 + (s.ARM/99)*6 + noise()*2, 4, 16);
-    const yards = Math.round(comp*ypc);
+    let yards = Math.round(comp*ypc);
     const tdRoll = (s.ARM + s.ACC + (99-Math.abs(50-s.CMP)))/3/99 + noise();
     const tds = clamp(Math.round(tdRoll*2.25), 0, 5);
     const intRoll = clamp((1-(s.INT/99))*0.6 + (1-(s.CMP/99))*0.4 + noise()*0.3, 0, 1);
     const ints = clamp(Math.round(intRoll*3), 0, 4);
-    Object.assign(line, {att, comp, yards, tds, ints});
+
+    const rushAtt = rand(rushProfile.carryRange[0], rushProfile.carryRange[1]);
+    const rushYpc = clamp(3 + (s.SPD/99)*3 + (s.AGI/99)*1.5 + rushProfile.ypcAdj + noise()*1.2, 0, 11);
+    const rushYards = Math.round(rushAtt*rushYpc);
+    const rushTDLambda = clamp((0.04 + (s.SPD/99)*0.22)*rushProfile.tdMult + noise()*0.07, 0, 0.55);
+    const rushTDs = Math.min(poissonSample(rushTDLambda), 3);
+    yards = Math.round(yards * rushProfile.passYardMult); // scramblers trade a little pass volume for rushing
+
+    Object.assign(line, {att, comp, yards, tds, ints, rushAtt, rushYards, rushTDs});
   } else if(pos === "RB"){
-    const carries = rand(10,26);
-    const ypc = clamp(3 + (s.SPD/99)*3 + (s.AGI/99)*1.5 + noise()*1.5, 1.5, 9);
+    const profile = RB_ARCHETYPE_PROFILE[state.archetype] || RB_ARCHETYPE_PROFILE["Power Back"];
+    const carries = Math.max(1, Math.round(rand(9,20) * profile.carryMult));
+    const ypc = clamp(2.4 + (s.SPD/99)*2.2 + (s.AGI/99)*1.0 + profile.rushYpcAdj + noise()*1.2, 1, 7.5);
     const rushYards = Math.round(carries*ypc);
-    const rushTDRoll = (s.STR + s.SPD)/2/99 + noise();
-    const rushTDs = clamp(Math.round(rushTDRoll), 0, 4);
-    const targets = Math.round(2 + (s.HND/99)*4);
-    const recs = Math.round(targets * clamp(0.5+(s.HND/99)*0.4,0.3,0.95));
-    const recYards = Math.round(recs * clamp(5 + (s.AGI/99)*4,3,12));
-    Object.assign(line, {carries, rushYards, rushTDs, recs, recYards});
+    const rushTDLambda = clamp((0.12 + ((s.STR+s.SPD)/2/99)*0.55)*profile.rushTDMult + noise()*0.15, 0.02, 0.9);
+    const rushTDs = Math.min(poissonSample(rushTDLambda), 4);
+    const targets = Math.max(0, Math.round((1.6 + (s.HND/99)*3) * profile.targetMult));
+    const catchPct = clamp(clamp(0.5+(s.HND/99)*0.4,0.3,0.95) * profile.catchMult, 0.25, 0.97);
+    const recs = Math.round(targets * catchPct);
+    const recYards = Math.round(recs * clamp(4 + (s.AGI/99)*3 + profile.recYprAdj, 2, 11));
+    const recTDLambda = clamp((0.05 + (s.HND/99)*0.2)*profile.recTDMult + noise()*0.08, 0.01, 0.5);
+    const recTDs = Math.min(poissonSample(recTDLambda), 3);
+    Object.assign(line, {carries, rushYards, rushTDs, recs, recYards, recTDs});
   } else if(pos === "WR" || pos === "TE"){
-    const targets = rand(4,12);
-    const catchPct = clamp(0.4 + (s.HND/99)*0.4 + noise()*0.15, 0.25, 0.95);
+    const profile = WR_ARCHETYPE_PROFILE[state.archetype] || { targetMult:1, catchMult:1, yprAdj:0, tdMult:1, dropShareAdj:0 };
+    const targets = Math.max(1, Math.round(rand(4,12) * profile.targetMult));
+    const catchPct = clamp(clamp(0.4 + (s.HND/99)*0.4 + noise()*0.15, 0.25, 0.95) * profile.catchMult, 0.2, 0.97);
     const recs = Math.round(targets*catchPct);
-    const ypr = clamp(8 + (s.SPD/99)*7 + (s.AGI/99)*3 + noise()*3, 4, 22);
+    const ypr = clamp(8 + (s.SPD/99)*7 + (s.AGI/99)*3 + noise()*3 + profile.yprAdj, 4, 24);
     const recYards = Math.round(recs*ypr);
-    const tdRoll = (s.SPD + s.HND)/2/99 + noise();
-    const recTDs = clamp(Math.round(tdRoll), 0, 3);
-    Object.assign(line, {targets, recs, recYards, recTDs});
+    const recTDLambda = clamp((0.12 + ((s.SPD+s.HND)/2/99)*0.5)*profile.tdMult + noise()*0.15, 0.03, 0.8);
+    const recTDs = Math.min(poissonSample(recTDLambda), 4);
+    const missed = Math.max(0, targets - recs);
+    const dropShare = clamp(0.35 - (s.HND/99)*0.25 + profile.dropShareAdj, 0.05, 0.7);
+    const drops = Math.round(missed * dropShare);
+    Object.assign(line, {targets, recs, recYards, recTDs, drops});
   } else if(pos === "OL"){
     const pancakes = clamp(Math.round(2 + (s.BLK/99)*7 + noise()*2), 0, 12);
     const sacksAllowed = clamp(Math.round((1-(s.BLK/99))*2 + noise()), 0, 4);
@@ -712,13 +920,19 @@ function runSeason(){
     ...buildInterconferenceGames(asfc, nsfc, 4),
   ]);
 
+  const bonus = teamContributionBonus();
+  const boostedPlayerTeam = { ...byName[state.team.name],
+    offVal: clamp(byName[state.team.name].offVal + bonus.off, 1, 99),
+    defVal: clamp(byName[state.team.name].defVal + bonus.def, 1, 99) };
+  const teamFor = name => name===state.team.name ? boostedPlayerTeam : byName[name];
+
   const standings = {}; all.forEach(t => standings[t.name] = {w:0,l:0});
   const seasonTotals = {};
   const gameLog = [];
   let weekCounter = 0;
 
   fullSchedule.forEach(([a,b]) => {
-    const winner = simulateGenericGame(byName[a], byName[b]);
+    const winner = simulateGenericGame(teamFor(a), teamFor(b));
     const winTeam = winner==="A" ? a : b;
     const loseTeam = winner==="A" ? b : a;
     standings[winTeam].w++;
@@ -744,6 +958,7 @@ function awardsFor(){
   if(pos==="QB" && t.yards >= 3800) awards.push("4,000-Yard Watch");
   if(pos==="QB" && t.tds >= 30) awards.push("Pro Bowl Nod");
   if(pos==="QB" && t.ints <= 8) awards.push("Mr. Reliable");
+  if(pos==="QB" && (t.rushYards||0) >= 350) awards.push("Dual-Threat");
   if(pos==="RB" && (t.rushYards||0) >= 1300) awards.push("1,300-Yard Club");
   if((pos==="WR"||pos==="TE") && (t.recYards||0) >= 1200) awards.push("1,200-Yard Receiver");
   if((pos==="WR"||pos==="TE") && (t.recTDs||0) >= 10) awards.push("Red Zone Threat");
@@ -755,17 +970,32 @@ function awardsFor(){
   return awards;
 }
 function lineSummary(line, pos){
-  if(pos==="QB") return `${line.comp}/${line.att}, ${line.yards} yds, ${line.tds} TD, ${line.ints} INT`;
-  if(pos==="RB") return `${line.carries} car, ${line.rushYards} yds, ${line.rushTDs} TD · ${line.recs} rec, ${line.recYards} yds`;
-  if(pos==="WR"||pos==="TE") return `${line.recs}/${line.targets}, ${line.recYards} yds, ${line.recTDs} TD`;
+  if(pos==="QB") return `${line.comp}/${line.att}, ${line.yards} pass yds, ${line.tds} pass TD, ${line.ints} INT · ${line.rushAtt} car, ${line.rushYards} rush yds, ${line.rushTDs} rush TD`;
+  if(pos==="RB"){
+    const ypc = line.carries ? (line.rushYards/line.carries).toFixed(1) : "0.0";
+    return `${line.carries} car, ${line.rushYards} yds (${ypc} Y/C), ${line.rushTDs} TD · ${line.recs} rec, ${line.recYards} yds, ${line.recTDs} TD`;
+  }
+  if(pos==="WR"||pos==="TE"){
+    const ypa = line.targets ? (line.recYards/line.targets).toFixed(1) : "0.0";
+    return `${line.recs}/${line.targets} (${ypa} Y/A), ${line.recYards} yds, ${line.recTDs} TD, ${line.drops} drop${line.drops===1?"":"s"}`;
+  }
   if(pos==="OL") return `${line.pancakes} pancakes, ${line.sacksAllowed} sacks allowed`;
   if(pos==="K") return `${line.made}/${line.atts} FG, long ${line.longMade}`;
   return `${line.tackles} tkl, ${line.sacks} sack, ${line.ints} INT`;
 }
 function totalsSummary(t, pos){
-  if(pos==="QB") return [["Comp/Att",`${t.comp}/${t.att}`],["Yards",t.yards],["TDs",t.tds],["INTs",t.ints]];
-  if(pos==="RB") return [["Carries",t.carries],["Rush Yds",t.rushYards],["Rush TDs",t.rushTDs],["Recs",t.recs],["Rec Yds",t.recYards]];
-  if(pos==="WR"||pos==="TE") return [["Recs",t.recs],["Targets",t.targets],["Rec Yds",t.recYards],["Rec TDs",t.recTDs]];
+  if(pos==="QB") return [["Comp/Att",`${t.comp}/${t.att}`],["Pass Yards",t.yards],["Pass TDs",t.tds],["INTs",t.ints],
+    ["Rush Att",t.rushAtt],["Rush Yards",t.rushYards],["Rush TDs",t.rushTDs]];
+  if(pos==="RB"){
+    const ypc = t.carries ? (t.rushYards/t.carries).toFixed(1) : "0.0";
+    return [["Carries",t.carries],["Rush Yds",t.rushYards],["Y/C",ypc],["Rush TDs",t.rushTDs],
+      ["Recs",t.recs],["Rec Yds",t.recYards],["Rec TDs",t.recTDs]];
+  }
+  if(pos==="WR"||pos==="TE"){
+    const ypa = t.targets ? (t.recYards/t.targets).toFixed(1) : "0.0";
+    const ypg = (t.recYards/16).toFixed(1);
+    return [["Recs",t.recs],["Targets",t.targets],["Rec Yds",t.recYards],["Y/A",ypa],["Y/G",ypg],["Rec TDs",t.recTDs],["Drops",t.drops]];
+  }
   if(pos==="OL") return [["Pancakes",t.pancakes],["Sacks Allowed",t.sacksAllowed]];
   if(pos==="K") return [["FG Made",t.made],["FG Att",t.atts],["Longest",t.longMade]];
   return [["Tackles",t.tackles],["Sacks",t.sacks],["INTs",t.ints]];
@@ -820,7 +1050,7 @@ function renderSeasonResults(){
 /* =========================================================
    BOOT
    ========================================================= */
-const RENDERERS = [renderName, renderPosition, renderArchetype, renderStats, renderTraits, renderCard, renderTeam, renderSeason];
+const RENDERERS = [renderName, renderPosition, renderAttributeTiers, renderReportCard, renderAttributeValues, renderTraits, renderCard, renderTeam, renderSeason];
 goto(0);
 </script>
 </body>
